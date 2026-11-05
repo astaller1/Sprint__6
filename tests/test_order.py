@@ -2,7 +2,8 @@ import pytest
 from selenium import webdriver
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions
-from pages.order_page import MainScooterPage, OrderScooterPage
+from pages.main_page import MainScooterPage
+from pages.order_page import OrderScooterPage
 from data import OrderInputData
 
 
@@ -14,12 +15,12 @@ def test_order_full_flow(driver, entry_point, name, surname, address, station_na
     main_page = MainScooterPage(driver)
     order_page = OrderScooterPage(driver)
 
+
     if entry_point == 'header':
         main_page.click_order_header_button()
     else:
         main_page.click_order_bottom_button()
-
-    order_page.accept_cookies_if_present()    
+  
 
     order_page.fill_personal_data(name, surname, address, station_name, phone)
     order_page.fill_rent_data(date, period, color, comment)
@@ -33,13 +34,13 @@ def test_order_full_flow(driver, entry_point, name, surname, address, station_na
 
     current_window = driver.window_handles
     main_page.click_yandex_logo()
-    WebDriverWait(driver, 10).until(expected_conditions.new_window_is_opened(current_window))
+    main_page.wait.until(expected_conditions.new_window_is_opened(current_window))
 
     for window_handle in driver.window_handles:
         if window_handle not in current_window:
             driver.switch_to.window(window_handle)
             break
 
-    WebDriverWait(driver, 10). until(expected_conditions.url_contains('dzen.ru'))
+    main_page.wait.until(expected_conditions.url_contains('dzen.ru'))
     assert 'dzen.ru' in driver.current_url
  

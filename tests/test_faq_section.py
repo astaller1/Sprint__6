@@ -1,6 +1,6 @@
 import pytest 
 from selenium import webdriver
-from pages.base_page import MainScooterPage
+from pages.main_page import MainScooterPage
 
 EXPECTED_ANSWER = ['Сутки — 400 рублей. Оплата курьеру — наличными или картой.', 
                    'Пока что у нас так: один заказ — один самокат. Если хотите покататься с друзьями, можете просто сделать несколько заказов — один за другим.', 
