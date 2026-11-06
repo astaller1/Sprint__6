@@ -1,46 +1,50 @@
 import pytest
-from selenium import webdriver
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions
 from pages.main_page import MainScooterPage
 from pages.order_page import OrderScooterPage
-from data import OrderInputData
+from data import TestData
+import allure
 
 
-@pytest.mark.parametrize('entry_point, name, surname, address, station_name, phone, date, period, color, comment', OrderInputData.full_data_set)
+@allure.title('Полный позитивный сценарий оформления заказа через точку входа: {entry_point}')
+@pytest.mark.parametrize('entry_point, name, surname, address, station_name, phone, date, period, color, comment', TestData.full_data_set)
 def test_order_full_flow(driver, entry_point, name, surname, address, station_name, phone, date, period, color, comment):
-    
-    driver.get('https://qa-scooter.praktikum-services.ru/')
 
     main_page = MainScooterPage(driver)
     order_page = OrderScooterPage(driver)
 
+    main_page.open_url(TestData.Main_page_url)
 
-    if entry_point == 'header':
-        main_page.click_order_header_button()
-    else:
-        main_page.click_order_bottom_button()
-  
+    entry_points = {'header': main_page.click_order_header_button, 'bottom': main_page.click_order_bottom_button}
+
+    entry_points[entry_point]()  
 
     order_page.fill_personal_data(name, surname, address, station_name, phone)
     order_page.fill_rent_data(date, period, color, comment)
 
     assert order_page.is_success_modal_visible()
 
-    order_page.close_modal()
+@allure.title('Клик по логотипу "Самокат" ведет на главную страницу')
+def test_click_scooter_logo_leads_to_main_page(driver):
 
-    main_page.click_scooter_logo()
-    assert main_page.is_main_page_open()
+    order_page = OrderScooterPage(driver)
+    
+    order_page.open_url(TestData.Order_page_url)
+    order_page.click_scooter_logo()
 
-    current_window = driver.window_handles
-    main_page.click_yandex_logo()
-    main_page.wait.until(expected_conditions.new_window_is_opened(current_window))
+    page = MainScooterPage(driver)
 
-    for window_handle in driver.window_handles:
-        if window_handle not in current_window:
-            driver.switch_to.window(window_handle)
-            break
+    assert page.is_main_page_open()
 
-    main_page.wait.until(expected_conditions.url_contains('dzen.ru'))
-    assert 'dzen.ru' in driver.current_url
+@allure.title('Клик по логотипу "Яндекс" ведет на "Яндекс.Дзен"')
+def test_click_yandex_logo_opens_zen(driver):
+
+    order_page = OrderScooterPage(driver)
+
+    order_page.open_url(TestData.Order_page_url)
+
+    order_page.click_yandex_logo()
+
+    current_url = order_page.switch_to_new_tab()
+
+    assert 'dzen.ru' in current_url
  

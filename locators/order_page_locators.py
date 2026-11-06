@@ -9,15 +9,15 @@ class OrderScooterLocators:
     station_input = (By.XPATH, '//input[@placeholder="* Станция метро"]')
     @staticmethod
     def get_station_option_locator(station_name):
-        return (By.XPATH, f'//li[@class="select-search__row"]//*[text()="{station_name}"]')
+        return (By.XPATH, f'//li[contains(@class, "select-search__row")]//*[text()="{station_name}"]')
     
     phone_input = (By.XPATH, '//input[@placeholder="* Телефон: на него позвонит курьер"]')
     next_button = (By.XPATH, '//button[text()="Далее"]')
 
     date_input = (By.XPATH, '//input[@placeholder="* Когда привезти самокат"]')
-    rent_time_dropdown = (By.XPATH, '//div[@class="Dropdown-placeholder"]')
-    rent_time_input_option_one_day = (By.XPATH, '//div[@class="Dropdown-option" and text()="сутки"]')
-    rent_time_input_option_two_days = (By.XPATH, '//div[@class="Dropdown-option" and text()="двое суток"]')
+    rent_time_dropdown = (By.XPATH, '//div[contains(@class,"Dropdown-placeholder")]')
+    rent_time_input_option_one_day = (By.XPATH, '//div[contains(@class, "Dropdown-option") and text()="сутки"]')
+    rent_time_input_option_two_days = (By.XPATH, '//div[contains(@class, "Dropdown-option") and text()="двое суток"]')
     color_black_checkbox = (By.ID, 'black')
     color_grey_checkbox = (By.ID, 'grey')
     comment_input = (By.XPATH, '//input[@placeholder="Комментарий для курьера"]')
