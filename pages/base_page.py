@@ -2,7 +2,6 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions
 from locators.main_page_locators import MainScooterLocators
 import allure
-import time
 
 
 class BasePage:
@@ -21,11 +20,9 @@ class BasePage:
 
     @allure.step('Принять куки(если отображаются)')
     def accept_cookies_if_present(self):
-        try:
-            cookie_button = MainScooterLocators.accept_cookie_button 
-            self.wait.until(expected_conditions.visibility_of_element_located(cookie_button)).click()
-        except:
-            pass
+        cookie_button = MainScooterLocators.accept_cookie_button
+        self.click_element_with_wait(cookie_button)
+        self.wait.until(expected_conditions.invisibility_of_element_located(cookie_button))
 
     @allure.step('Прокрутить до низа страницы')
     def scroll_to_bottom(self):
@@ -56,10 +53,12 @@ class BasePage:
     @allure.step('Переключиться на новую вкладку')
     def switch_to_new_tab(self):
 
+        self.wait.until(expected_conditions.number_of_windows_to_be(2))
         all_windows = self.driver.window_handles
         self.driver.switch_to.window(all_windows[-1])
 
-        time.sleep(3)
+        self.wait.until(lambda driver: driver.current_url != "about:blank" and driver.current_url != "")
 
         return self.driver.current_url
+ 
  
